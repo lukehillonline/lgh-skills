@@ -1,0 +1,11 @@
+{
+  "name": "lgh-skills",
+  "owner": { "name": "Luke Gorsuch-Hill" },
+  "plugins": [
+    {
+      "name": "lgh-skills",
+      "source": "./",
+      "description": "Luke Gorsuch-Hill's Claude Code skills"
+    }
+  ]
+}
