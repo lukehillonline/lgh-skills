@@ -12,7 +12,7 @@ The user then works as normal: as many sessions as they like, their skills and p
 ## Rules
 
 - One step at a time. Ask, then stop and wait for the answer.
-- `sbx run` and `sbx exec -it` are interactive. You can't drive them from Bash: give the user the command to run in a separate terminal.
+- `sbx run` and `sbx exec -it` are interactive. You can't drive them from Bash: open them in a new terminal window (step **4**). Non-interactive commands (`sbx create`, `sbx exec` without `-it`, `sbx skills import`) you run yourself.
 - Never mount extra host paths without `:ro`.
 - Never pass secrets with `-e` or mounted files. Use `sbx secret set`.
 
@@ -57,38 +57,52 @@ For Clone:
 - Run `git rev-parse --show-toplevel`. If this isn't a Git repo, stop and offer Direct instead.
 - Run `git status --porcelain`. Uncommitted changes may not reach the clone. If there are any, ask with AskUserQuestion whether to stop so the user can commit, or carry on without them. Never commit, stash or discard them yourself.
 
-## 3. Skills and plugins
+## 3. Create the sandbox, then add skills and plugins
+
+Create the sandbox without starting a session, from the project root:
+
+```bash
+sbx create --name <name> claude .            # Direct
+sbx create --clone --name <name> claude .    # Clone
+```
+
+If `sbx create` fails, show the error and stop.
 
 The sandbox doesn't load the host's `~/.claude` (`%USERPROFILE%\.claude` on Windows, which is also `~/.claude` in Git Bash): user-level `CLAUDE.md`, settings, hooks, output styles and plugins stay on the host. Project-level `.claude/` in the workspace is available. Tell the user this.
 
-**Skills:** give the user `sbx skills import` to copy skills from the host. Run `sbx skills import --help` first and use the syntax it shows.
+**Skills:** run `sbx skills import --help`, then import the host's skills into the sandbox using the syntax it shows.
 
-**Plugins:** read `~/.claude/plugins/known_marketplaces.json` and `enabledPlugins` in `~/.claude/settings.json`. Build the commands to reinstall the enabled plugins inside the sandbox:
+**Plugins:** read `~/.claude/plugins/known_marketplaces.json` and `enabledPlugins` in `~/.claude/settings.json`. Marketplaces with a local `directory` source aren't reachable from the sandbox: list them as skipped. Show the user the list of plugins to install and ask with AskUserQuestion whether to install all of them, or let the user name the ones to skip. Then, for each marketplace and plugin, run:
 
+```bash
+sbx exec <name> claude plugin marketplace add <owner/repo or git URL>
+sbx exec <name> claude plugin install <plugin>@<marketplace>
 ```
-/plugin marketplace add <owner/repo or git URL>
-/plugin install <plugin>@<marketplace>
-```
 
-Marketplaces with a local `directory` source aren't reachable from the sandbox. List them as skipped. Show the commands for the user to run inside the first session (step **4**), then `/reload-plugins`. The sandbox keeps them, so this is only needed once per sandbox.
+Report each failure with its error and carry on with the rest. If `sbx exec` itself fails (for example because the sandbox isn't running), fall back to giving the user the same commands as `/plugin marketplace add` and `/plugin install` to run in the first session, followed by `/reload-plugins`. The sandbox keeps what's installed, so this is only needed once per sandbox.
 
 **Other credentials:** if the user's work needs an API key (for example a model provider), have them store it with `sbx secret set`. Run `sbx secret ls` to show what's already stored.
 
 ## 4. Start sessions
 
-Give the user the commands to run in separate terminals (Terminal on macOS, PowerShell on Windows), from the project root. They're the same on both:
+Work out, at run time, how to open a new tab in the terminal app this session runs in. Don't rely on a fixed list: terminals differ and change.
+
+1. **Identify the app.** Read the environment: `TERM_PROGRAM`, `__CFBundleIdentifier` (macOS), `WT_SESSION` (Windows Terminal), and any app-specific variables (`env | grep -iE 'term|warp|iterm|wezterm|kitty|ghostty|vscode'`). On Windows, also check the parent process if the environment doesn't say.
+2. **Find how it opens a tab running a command.** In order of preference: its own CLI (check `--help`), its scripting interface (AppleScript on macOS), its URI scheme or config files. Check the app's official docs with a web search if the local help doesn't answer it. Prefer a new tab in the current window, then a new window of the same app, then a new window of the OS default terminal (Terminal.app on macOS, PowerShell on Windows). If the app can't run a command in a new tab (some IDE terminals), say so and use the next option.
+3. **Ask first.** With AskUserQuestion, name the app, say tab or window, show the exact command you'll run (and any file it writes), and ask whether to run it. The session runs `sbx run <name>` from the project root. macOS may ask once to allow controlling the app.
+4. **Run it.** If the method writes a file (for example a saved tab or launch config), name it `sbx-<name>` and tell the user where it is.
+
+If the command fails, give the user the commands below to run themselves. Either way, show them for later. They're the same on macOS and Windows:
 
 ```bash
-# Create the sandbox and start the first session
-sbx run --name <name> claude .            # Direct
-sbx run --clone --name <name> claude .    # Clone
-
-# Return to an existing sandbox
+# Return to the sandbox (also the first session)
 sbx run <name>
 
 # More sessions in the same sandbox
 sbx exec -it <name> claude --dangerously-skip-permissions
 ```
+
+Offer to open more sessions the same way, running the `sbx exec -it` command.
 
 Tell them:
 

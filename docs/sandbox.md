@@ -34,8 +34,8 @@ Remaining risk: hosts the network policy allows can still be used to send data o
 
 1. **Preflight:** checks the platform (macOS or Windows), `sbx`, the network policy and existing sandboxes.
 2. **Workspace mode:** Direct or Clone.
-3. **Skills and plugins:** the sandbox doesn't load `~/.claude`, so it gives you the `sbx skills import` command and the `/plugin` commands to reinstall your enabled plugins. Needed once per sandbox.
-4. **Sessions:** gives you the commands to start the sandbox, return to it, and open more sessions in it.
+3. **Create, then skills and plugins:** creates the sandbox with `sbx create`. The sandbox doesn't load `~/.claude`, so it imports your skills with `sbx skills import` and installs your enabled plugins inside the sandbox with `claude plugin install`. Needed once per sandbox.
+4. **Sessions:** detects the terminal app you're in, works out how that app opens a new tab running a command (its CLI, scripting or docs), shows you the exact command and, once you agree, opens the sandbox there. Falls back to a new window, then to printing the commands. Can open more sessions the same way.
 5. **Host check (Direct mode):** flags Git hooks, Git config and changed scripts that would run on your host.
 6. **Stop or remove:** `sbx stop` keeps the sandbox, `sbx rm` deletes it.
 
@@ -44,5 +44,7 @@ Remaining risk: hosts the network policy allows can still be used to send data o
 Untested: written from the Docker Sandboxes docs on 2026-10-06, without access to an Apple silicon Mac or a Windows 11 machine. Unverified:
 
 - Opening extra sessions with `sbx exec -it <name> claude`.
+- `sbx create` accepting `--clone`, and `sbx exec` working on a sandbox that was created but not yet run.
+- Opening tabs: worked out at run time per terminal, so untested by design.
 - Plugins installed inside a sandbox persisting across restarts.
 - Uncommitted changes being left out of the clone in Clone mode.
