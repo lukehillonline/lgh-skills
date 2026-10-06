@@ -8,7 +8,7 @@ A collection of [Claude Code](https://claude.com/claude-code) skills, installabl
 
 | Output style | What it does |
 | --- | --- |
-| [`dev-talk`](docs/dev-talk.md) | Always on. Plain, factual, direct responses: no praise, enthusiasm or filler. Also applies to commits, PRs, tickets and code comments |
+| [`dev-talk`](docs/dev-talk.md) | Always on. Short, plain, factual, direct responses: no praise, enthusiasm or filler. Also applies to commits, PRs, tickets and code comments |
 
 ## Installation
 

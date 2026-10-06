@@ -4,7 +4,7 @@
 
 ## What it does
 
-`dev-talk` changes how Claude writes. It answers first and reports results as facts with evidence. It disagrees directly when the user is wrong, and caps lists at 5 items. It removes praise, enthusiasm, exclamation marks, emoji, preamble and closing pleasantries. Grammar stays normal. The same tone applies to commit messages, PR descriptions and comments, Jira comments and code comments.
+`dev-talk` changes how Claude writes. It answers first, keeps replies short, answers only what was asked, and reports results as facts with evidence. It disagrees directly when the user is wrong, and caps lists at 5 items. It removes praise, enthusiasm, exclamation marks, emoji, preamble and closing pleasantries. Grammar stays normal. The same tone applies to commit messages, PR descriptions and comments, Jira comments and code comments.
 
 ## How it works
 
