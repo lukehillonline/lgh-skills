@@ -10,7 +10,7 @@
     {
       "name": "dev-talk",
       "source": "./plugins/dev-talk",
-      "description": "Always-on output style for short, plain, factual responses with no praise or filler"
+      "description": "Always-on output style for replies that can be scanned in seconds: answer first, short chunks, bullets, one action at a time. Built for readers with ADHD, dyslexia or limited attention"
     }
   ]
 }
