@@ -22,6 +22,8 @@ The `mcp__atlassian__*` tools must be available. They may be deferred: load the 
 
 ## 1. Ask the two opening questions
 
+If the args contain a Jira key, run **1A** for it first, before asking anything else. Then continue here.
+
 First read the skill's args. A Jira key answers the ticket question, and a planner name answers the planner question. Ask only the questions the args didn't answer. If both are answered, skip the AskUserQuestion call.
 
 Ask the remaining questions in a single AskUserQuestion call:
@@ -44,10 +46,18 @@ Rules for the ticket answer:
 
 Branch on the ticket answer:
 
-- A ticket key was given: check for a saved summary at `.planning/tickets/<KEY>.md` (see **4**). If it exists, ask with AskUserQuestion whether to resume from it or start fresh.
+- A ticket key was given: if **1A** hasn't run for it yet, run it now. Then check for a saved summary at `.planning/tickets/<KEY>.md` (see **4**). If it exists, ask with AskUserQuestion whether to resume from it or start fresh.
   - **Resume:** read the file, show the summary, and go to **6**. Skip fetching and clarifying: the file is the confirmed summary.
   - **Start fresh** (or no file): go to **2A**.
 - `No ticket` was picked: go to **2B**.
+
+## 1A. Claim the ticket
+
+Runs as soon as a ticket key is known, before anything else happens with it. Ask each question on its own, and wait for the answer.
+
+1. Call `mcp__atlassian__getAccessibleAtlassianResources` once to get the `cloudId`. Call `mcp__atlassian__getJiraIssue` for the key to read its assignee and status. If the ticket can't be found, stop and tell the user.
+2. **Assign.** Get the user's `accountId` from `atlassianUserInfo`. If the ticket is already assigned to the user, say so and skip this question. Otherwise ask with AskUserQuestion whether to assign it to them, naming the current assignee if there is one. If yes, set it with `editJiraIssue` (`fields: { "assignee": { "accountId": "<id>" } }`).
+3. **Move.** List the ticket's transitions (find the operation with `discover`). Ask with AskUserQuestion which column to move the ticket to, naming its current status. Offer up to 3 transitions, the most likely first (usually In Progress), plus `Leave it in <current status>`. The user can pick Other to type a column. Match a typed name against the transitions, and if it matches none or more than one, show the options and ask again. Never guess. If the user picks a column, move the ticket with `transitionJiraIssue`.
 
 ## 2A. Ticket path: fetch the ticket
 
@@ -180,10 +190,7 @@ Don't claim the ticket, create a branch or plan. Ask with AskUserQuestion whethe
 
 ## 6. Claim the ticket and create the branch
 
-If there is a ticket key, ask with AskUserQuestion whether to assign the ticket to the user and move it to In Progress. If yes:
-
-1. Get the user's `accountId` from `atlassianUserInfo` and set it with `editJiraIssue` (`fields: { "assignee": { "accountId": "<id>" } }`). If the ticket already has a different assignee, say who and ask before reassigning.
-2. List the ticket's transitions (find the operation with `discover`) and use `transitionJiraIssue` with the transition that leads to In Progress. If none does, or more than one does, show the user the options and ask. Skip this if the ticket is already In Progress.
+If there is a ticket key and **1A** hasn't run for it (a ticket created or picked in **5**), run **1A** now.
 
 Then ask with AskUserQuestion whether the user wants a new branch. If they say no, skip to the end of this step.
 
