@@ -5,6 +5,7 @@ A collection of [Claude Code](https://claude.com/claude-code) skills, installabl
 | Skill | What it does |
 | --- | --- |
 | [`start-ticket`](docs/start-ticket.md) | Takes a Jira ticket (or a problem with no ticket yet) from "just picked up" to "ready to plan" |
+| [`sandbox`](docs/sandbox.md) | Sets up a Docker Sandboxes microVM so Claude Code can be used as normal (sessions, skills, plugins) with permissions skipped |
 
 | Plugin | What it does |
 | --- | --- |
