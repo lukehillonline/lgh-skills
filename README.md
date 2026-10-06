@@ -10,7 +10,7 @@ A collection of [Claude Code](https://claude.com/claude-code) skills, installabl
 
 <table>
   <tr><th width="150" nowrap>Plugin</th><th>What it does</th></tr>
-  <tr><td nowrap><a href="docs/dev-talk.md"><code>dev-talk</code></a></td><td>Always-on output style. Short, plain, factual, direct responses: no praise, enthusiasm or filler. Also applies to commits, PRs, tickets and code comments. Installed separately</td></tr>
+  <tr><td nowrap><a href="docs/dev-talk.md"><code>dev-talk</code></a></td><td>Always-on output style. Replies built to be scanned in seconds: answer first, short chunks, bullets, one action at a time. Made for readers with ADHD, dyslexia or limited attention. Also applies to commits, PRs, tickets and code comments. Installed separately</td></tr>
 </table>
 
 ## Installation
