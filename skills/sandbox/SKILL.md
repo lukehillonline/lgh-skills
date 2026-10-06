@@ -20,13 +20,25 @@ The user then works as normal: as many sessions as they like, their skills and p
 
 Run these and stop at the first failure, telling the user what failed and how to fix it:
 
-1. `uname -sm` and, on macOS, `sysctl -n machdep.cpu.brand_string`. On macOS, `sbx` needs Apple silicon and macOS 14 or later. On an Intel Mac, stop: `sbx` isn't supported there.
-2. `command -v sbx`. If it's missing, give the install commands and stop:
-   ```bash
-   brew trust docker/tap
-   brew install docker/tap/sbx
-   sbx login
-   ```
+1. `uname -sm` to find the platform. Claude Code on Windows reports `MINGW64_NT-...` or `MSYS_NT-...` (Git Bash). This skill supports macOS and native Windows only: for anything else, including WSL, stop and say so.
+   - **macOS:** run `sw_vers -productVersion` and `sysctl -n machdep.cpu.brand_string`. `sbx` needs macOS 14 or later and Apple silicon. On an Intel Mac, stop: `sbx` isn't supported there.
+   - **Windows:** run `powershell.exe -NoProfile -Command "(Get-CimInstance Win32_OperatingSystem).Caption"`. `sbx` needs Windows 11 on a 64-bit Intel or AMD processor, so stop on Windows 10 or Arm. It also needs Windows Hypervisor Platform. Checking it needs admin, so tell the user to make sure it's on by running this in an elevated PowerShell (safe if it's already on; a restart may be needed):
+     ```powershell
+     Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -All
+     ```
+2. `command -v sbx`. If it's missing, give the install commands for the platform and stop.
+   - **macOS:**
+     ```bash
+     brew trust docker/tap
+     brew install docker/tap/sbx
+     sbx login
+     ```
+   - **Windows** (PowerShell, per-user, no admin needed). Open a new terminal afterwards so `sbx` is on `PATH`:
+     ```powershell
+     winget install -h Docker.sbx
+     sbx login
+     ```
+
    On first use, `sbx` asks for a global network policy. Tell the user to pick **Balanced** (default deny, common dev hosts allowed).
 3. `sbx policy ls`. Show the user the rules. If the policy allows all traffic (Open), stop and tell them to switch to Balanced or Locked Down. If you can't tell from the output, ask.
 4. `sbx ls`. If a sandbox for this project already exists (step 2 says how they're named), ask with AskUserQuestion whether to reuse it (go to **4**) or set up a new one.
@@ -35,7 +47,7 @@ Run these and stop at the first failure, telling the user what failed and how to
 
 Ask with AskUserQuestion, showing both descriptions:
 
-- `Direct`: the agent edits your real checkout, and your IDE sees changes live. Works like normal. Risk: the agent can write files that later run on your host, outside the sandbox (`.git/hooks`, `.git/config`, `package.json` scripts, `.envrc`, `Makefile`, `.vscode/tasks.json`). Check them before running anything on the host (step **5**).
+- `Direct`: the agent edits your real checkout, and your IDE sees changes live. Works like normal. Risk: the agent can write files that later run on your host, outside the sandbox (`.git/hooks`, `.git/config`, `package.json` scripts, `.envrc`, `Makefile`, `.vscode/tasks.json`, `.ps1`/`.bat`/`.cmd` scripts). Check them before running anything on the host (step **5**).
 - `Clone`: the agent works on a private Git clone inside the sandbox, and your checkout is mounted read-only. Your host can't be touched. You see the agent's work by fetching from the `sandbox-<name>` remote. Needs a Git repo.
 
 The mode is fixed when the sandbox is created. Name the sandbox `<folder>` for Direct and `<folder>-clone` for Clone, where `<folder>` is the current directory's name.
@@ -47,7 +59,7 @@ For Clone:
 
 ## 3. Skills and plugins
 
-The sandbox doesn't load the host's `~/.claude`: user-level `CLAUDE.md`, settings, hooks, output styles and plugins stay on the host. Project-level `.claude/` in the workspace is available. Tell the user this.
+The sandbox doesn't load the host's `~/.claude` (`%USERPROFILE%\.claude` on Windows, which is also `~/.claude` in Git Bash): user-level `CLAUDE.md`, settings, hooks, output styles and plugins stay on the host. Project-level `.claude/` in the workspace is available. Tell the user this.
 
 **Skills:** give the user `sbx skills import` to copy skills from the host. Run `sbx skills import --help` first and use the syntax it shows.
 
@@ -64,7 +76,7 @@ Marketplaces with a local `directory` source aren't reachable from the sandbox. 
 
 ## 4. Start sessions
 
-Give the user the commands to run in separate terminals, from the project root:
+Give the user the commands to run in separate terminals (Terminal on macOS, PowerShell on Windows), from the project root. They're the same on both:
 
 ```bash
 # Create the sandbox and start the first session
@@ -90,7 +102,7 @@ When the user comes back after a Direct-mode session, or asks to check, look for
 
 1. `ls -la .git/hooks` and flag every file not ending in `.sample`.
 2. `git config --local --list`, flagging `core.hooksPath`, `core.fsmonitor`, `core.sshCommand`, `*.helper` and any `alias.*` starting with `!`.
-3. `git status --porcelain` and `git diff`, flagging changes to `package.json` scripts, lockfiles, `.envrc`, `Makefile`, `.vscode/`, `.idea/`, Dockerfiles, CI config and shell scripts.
+3. `git status --porcelain` and `git diff`, flagging changes to `package.json` scripts, lockfiles, `.envrc`, `Makefile`, `.vscode/`, `.idea/`, Dockerfiles, CI config, and shell, `.ps1`, `.bat` or `.cmd` scripts.
 
 Show what you found. Never delete or revert anything without an explicit "yes".
 

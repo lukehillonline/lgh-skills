@@ -21,8 +21,10 @@ Remaining risk: hosts the network policy allows can still be used to send data o
 
 ## Requirements
 
-- Apple silicon Mac with macOS 14 or later. Intel Macs are not supported by `sbx`.
-- `sbx` CLI and a Docker account (`brew install docker/tap/sbx`, `sbx login`).
+- One of:
+  - macOS 14 or later on Apple silicon. Intel Macs are not supported by `sbx`.
+  - Windows 11 on a 64-bit Intel or AMD processor, with Windows Hypervisor Platform turned on. WSL is not covered.
+- `sbx` CLI and a Docker account: `brew install docker/tap/sbx` on macOS, `winget install -h Docker.sbx` on Windows, then `sbx login`.
 
 ## How to use it
 
@@ -30,7 +32,7 @@ Remaining risk: hosts the network policy allows can still be used to send data o
 /sandbox
 ```
 
-1. **Preflight:** checks the platform, `sbx`, the network policy and existing sandboxes.
+1. **Preflight:** checks the platform (macOS or Windows), `sbx`, the network policy and existing sandboxes.
 2. **Workspace mode:** Direct or Clone.
 3. **Skills and plugins:** the sandbox doesn't load `~/.claude`, so it gives you the `sbx skills import` command and the `/plugin` commands to reinstall your enabled plugins. Needed once per sandbox.
 4. **Sessions:** gives you the commands to start the sandbox, return to it, and open more sessions in it.
@@ -39,7 +41,7 @@ Remaining risk: hosts the network policy allows can still be used to send data o
 
 ## Status
 
-Untested: written from the Docker Sandboxes docs on 2026-10-06, without access to an Apple silicon Mac. Unverified:
+Untested: written from the Docker Sandboxes docs on 2026-10-06, without access to an Apple silicon Mac or a Windows 11 machine. Unverified:
 
 - Opening extra sessions with `sbx exec -it <name> claude`.
 - Plugins installed inside a sandbox persisting across restarts.
