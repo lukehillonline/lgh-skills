@@ -6,9 +6,9 @@ A collection of [Claude Code](https://claude.com/claude-code) skills, installabl
 | --- | --- |
 | [`start-ticket`](docs/start-ticket.md) | Takes a Jira ticket (or a problem with no ticket yet) from "just picked up" to "ready to plan" |
 
-| Output style | What it does |
+| Plugin | What it does |
 | --- | --- |
-| [`dev-talk`](docs/dev-talk.md) | Always on. Short, plain, factual, direct responses: no praise, enthusiasm or filler. Also applies to commits, PRs, tickets and code comments |
+| [`dev-talk`](docs/dev-talk.md) | Always-on output style. Short, plain, factual, direct responses: no praise, enthusiasm or filler. Also applies to commits, PRs, tickets and code comments. Installed separately |
 
 ## Installation
 
@@ -25,6 +25,8 @@ Inside Claude Code:
 The skills are then available in every project. Plugin skills are namespaced, so run it as `/lgh-skills:start-ticket`.
 
 To update later: `/plugin marketplace update lgh-skills`.
+
+`dev-talk` is a separate plugin in the same marketplace: `/plugin install dev-talk@lgh-skills`. See [docs/dev-talk.md](docs/dev-talk.md).
 
 ### Manually
 
@@ -50,12 +52,14 @@ Contributions are welcome, whether that's a fix, an improvement to an existing s
 skills/
   <skill-name>/
     SKILL.md          # the skill itself
-output-styles/        # every .md here loads as a style, so no README
-  <style-name>.md     # output styles
-hooks/
-  hooks.json          # plugin hooks
+plugins/
+  dev-talk/           # separate plugin, listed in marketplace.json
+    .claude-plugin/plugin.json
+    output-styles/    # every .md here loads as a style, so no README
+    hooks/hooks.json
+    skills/           # start, stop
 docs/
-  <name>.md           # one doc per skill or output style
+  <name>.md           # one doc per skill or plugin
 ```
 
 ### Adding or changing a skill

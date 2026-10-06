@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'DEV-TALK ACTIVE. Follow the dev-talk output style rules for every response and everything written on the user'\\''s behalf (commits, PRs, tickets, code comments), unless /dev-talk:stop or \"normal mode\" was used later in this session. Off: /dev-talk:stop. On: /dev-talk:start.'"
+          }
+        ]
+      }
+    ]
+  }
+}

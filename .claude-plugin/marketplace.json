@@ -6,6 +6,11 @@
       "name": "lgh-skills",
       "source": "./",
       "description": "Luke Gorsuch-Hill's Claude Code skills"
+    },
+    {
+      "name": "dev-talk",
+      "source": "./plugins/dev-talk",
+      "description": "Always-on output style for short, plain, factual responses with no praise or filler"
     }
   ]
 }

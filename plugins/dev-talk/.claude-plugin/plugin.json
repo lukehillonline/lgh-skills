@@ -1,0 +1,8 @@
+{
+  "name": "dev-talk",
+  "description": "Always-on output style for short, plain, factual responses with no praise or filler",
+  "version": "0.1.0",
+  "author": { "name": "Luke Gorsuch-Hill" },
+  "repository": "https://github.com/lukehillonline/lgh-skills",
+  "license": "MIT"
+}
