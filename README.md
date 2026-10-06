@@ -2,14 +2,16 @@
 
 A collection of [Claude Code](https://claude.com/claude-code) skills, installable globally as a plugin.
 
-| Skill | What it does |
-| --- | --- |
-| [`start-ticket`](docs/start-ticket.md) | Takes a Jira ticket (or a problem with no ticket yet) from "just picked up" to "ready to plan" |
-| [`sandbox`](docs/sandbox.md) | Sets up a Docker Sandboxes microVM so Claude Code can be used as normal (sessions, skills, plugins) with permissions skipped |
+<table>
+  <tr><th width="150" nowrap>Skill</th><th>What it does</th></tr>
+  <tr><td nowrap><a href="docs/start-ticket.md"><code>start-ticket</code></a></td><td>Takes a Jira ticket (or a problem with no ticket yet) from "just picked up" to "ready to plan"</td></tr>
+  <tr><td nowrap><a href="docs/sandbox.md"><code>sandbox</code></a></td><td>Sets up a Docker Sandboxes microVM so Claude Code can be used as normal (sessions, skills, plugins) with permissions skipped</td></tr>
+</table>
 
-| Plugin | What it does |
-| --- | --- |
-| [`dev-talk`](docs/dev-talk.md) | Always-on output style. Short, plain, factual, direct responses: no praise, enthusiasm or filler. Also applies to commits, PRs, tickets and code comments. Installed separately |
+<table>
+  <tr><th width="150" nowrap>Plugin</th><th>What it does</th></tr>
+  <tr><td nowrap><a href="docs/dev-talk.md"><code>dev-talk</code></a></td><td>Always-on output style. Short, plain, factual, direct responses: no praise, enthusiasm or filler. Also applies to commits, PRs, tickets and code comments. Installed separately</td></tr>
+</table>
 
 ## Installation
 
