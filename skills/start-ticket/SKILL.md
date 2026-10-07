@@ -128,9 +128,9 @@ Ask with AskUserQuestion whether you should create a Jira ticket from the confir
 
   Before asking for the details, look up the current sprint with `executeRead`:
   1. `listJiraBoards` with `{ "projectKeyOrId": "<PROJECT>", "type": "all" }`. Kanban boards have no sprints, so keep only the board whose `type` is `scrum`. If there isn't exactly one, show the boards and ask which to use.
-  2. `listJiraBoardSprints` with that `boardId` and `"state": "active"`. If there isn't exactly one active sprint, show them (or say there are none) and ask which to use, offering the backlog as an option.
+  2. `listJiraBoardSprints` with that `boardId` and `"state": "active"`, then again with `"state": "future"`. If there isn't exactly one active sprint, show them (or say there are none) and ask which to use.
 
-  Keep the sprint's name and numeric ID. Always use the ID from here on: sprint names repeat across boards and years.
+  Keep every sprint's name and numeric ID. Always use the ID from here on: sprint names repeat across boards and years. Some teams use a future sprint as their backlog (e.g. one named "Backlog"). That is still a sprint, with an ID, and is never the same as the board's backlog.
 
   Also fetch, with their IDs:
   - the open epics: `searchJiraIssuesUsingJql` with `project = <PROJECT> AND issuetype = Epic AND statusCategory != Done`
@@ -138,7 +138,7 @@ Ask with AskUserQuestion whether you should create a Jira ticket from the confir
 
   Ask for the ticket details in one AskUserQuestion call, as the only thing in that message. Never show them as a table or a list of proposed values to confirm. Build the options from what you fetched. The user can always pick Other to type a value instead.
   1. **Epic**: the 3 open epics that best match the confirmed summary.
-  2. **Sprint**: `<current sprint name> (current)` and `Backlog (Future Work)`.
+  2. **Sprint**: `<current sprint name> (current)`, up to 2 future sprints by their exact names, and `No sprint (board backlog)`.
   3. **Component**: the 3 components that best match the affected areas.
   4. **Ticket type**: up to 4 of the project's issue types, the best fit first.
 
@@ -173,9 +173,9 @@ Ask with AskUserQuestion whether you should create a Jira ticket from the confir
 
   Before creating anything, show the user the exact payload: the summary, the description, the type, the epic, the sprint and the component. Wait for an explicit "yes".
 
-  Then call `createJiraIssue` with the description as Markdown (its default `contentFormat`) and the numeric sprint ID as a string in `assignToSprint` (e.g. `"375"`). Never pass the sprint name or `"active"`. Leave out `assignToSprint` for the backlog.
+  Then call `createJiraIssue` with the description as Markdown (its default `contentFormat`) and the numeric sprint ID as a string in `assignToSprint` (e.g. `"375"`). Never pass the sprint name or `"active"`. Any sprint the user picked, active or future, goes in `assignToSprint` by ID, even when its name contains "Backlog". Leave out `assignToSprint` only when the user picked `No sprint (board backlog)`.
 
-  The ticket is created even when the sprint assignment fails, so never create it again. Check the sprint instead:
+  The ticket is created even when the sprint assignment fails, so never create it again. If a sprint was picked, check it:
   1. If the response doesn't show `sprintAssignment.assigned: true`, call `transitionJiraIssue` with only `issueIdOrKey` and `sprintId` (a number, not a string).
   2. Then confirm it with `searchJiraIssuesUsingJql` using `key = <KEY> AND sprint = <sprint ID>`. If that returns nothing, retry step 1 once and check again. If it still fails, tell the user the ticket is not in the sprint and give them the error.
 

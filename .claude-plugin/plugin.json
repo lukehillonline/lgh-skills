@@ -1,7 +1,7 @@
 {
   "name": "lgh-skills",
   "description": "Luke Gorsuch-Hill's Claude Code skills",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "author": { "name": "Luke Gorsuch-Hill" },
   "repository": "https://github.com/lukehillonline/lgh-skills",
   "license": "MIT"
