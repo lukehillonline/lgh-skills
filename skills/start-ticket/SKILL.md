@@ -155,21 +155,34 @@ Ask with AskUserQuestion whether you should create a Jira ticket from the confir
 
   **Bug:** use these sections, in this order:
 
-  - **Background:** a short, general description of the bug.
-  - **Expected:** numbered steps describing how it is supposed to work.
-  - **Actual:** numbered steps to recreate the bug, ending with what goes wrong.
+  - **Background:** one or two sentences describing the bug.
+  - **Expected:** numbered steps describing how it is supposed to work, 4 at most.
+  - **Actual:** numbered steps to recreate the bug, ending with what goes wrong, 4 at most. Don't repeat setup steps already in Expected; start from "Same as Expected 1–2, then".
   - **Acceptance Criteria:** the expected end result once the ticket is done, as testable bullets a non-developer understands.
   - **Tech Notes:** optional. Follow the same rules as Tech Notes below.
   - **Design/Evidence:** optional. Figma links, screenshots, screen recordings and the linked Sentry issue.
 
   **Any other type:** use these sections, in this order:
 
-  - **Background:** a short overview, a few sentences at most, of what is changing and why.
+  - **Background:** two sentences at most: what is changing and why.
   - **Acceptance Criteria:** a bullet list. Each item must be an action someone can test, written so a non-developer understands it. No code names, file paths or store fields.
-  - **Tech Notes:** everything technical: caveats, guidance, file paths, links to documentation, and shared prerequisites (e.g. "may already be done by PROJ-123"). Add a table or a longer explanation only if it clearly adds value; otherwise keep to short bullets. Where possible, don't hardcode technical details such as variable names, types, payload fields or values. Link to the documentation instead (Miro, Confluence, API docs): that is the source of truth, and hardcoded details go out of date. Describe the approach in words, and ask the user for documentation links if you don't have any.
+  - **Tech Notes:** only what a developer needs to start: where the change lives, the approach, real caveats, links to documentation, and shared prerequisites (e.g. "may already be done by PROJ-123"). Leave out anything they'd find in the first few minutes of reading the code. Where possible, don't hardcode technical details such as variable names, types, payload fields or values. Link to the documentation instead (Miro, Confluence, API docs): that is the source of truth, and hardcoded details go out of date. Describe the approach in words, and ask the user for documentation links if you don't have any.
   - **Design:** the Figma link. Leave this section out if the user didn't give one.
 
   Keep tickets short and precise. Only Tech Notes may be technical; every other section must make sense to a non-developer.
+
+  Length limits, for every type:
+  - Every bullet and step is one line: one sentence, no sub-clauses chained with semicolons.
+  - Acceptance Criteria: 5 bullets at most. Tech Notes: 5 bullets at most. No tables, sub-bullets or bold lead-ins ("**Scope:** …").
+  - If the work genuinely needs more, say so to the user and suggest splitting the ticket instead of writing a longer one.
+
+  Leave out:
+  - How you worked things out: no "confirmed in code", "likely", "I checked", or explanations of why an alternative won't work.
+  - Anything already said in another section, or in the title.
+  - Out-of-scope notes, unless the user asked for one or it prevents an obvious mistake.
+  - The clarification Q&A. Decisions belong in the summary file and the optional comment in **7**, not the description.
+
+  Before showing the payload, trim the draft: cut every word, bullet and sentence that a developer or tester wouldn't miss.
 
   Before creating anything, show the user the exact payload: the summary, the description, the type, the epic, the sprint and the component. Wait for an explicit "yes".
 
