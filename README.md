@@ -6,6 +6,7 @@ A collection of [Claude Code](https://claude.com/claude-code) skills, installabl
   <tr><th width="150" nowrap>Skill</th><th>What it does</th></tr>
   <tr><td nowrap><a href="docs/start-ticket.md"><code>start-ticket</code></a></td><td>Takes a Jira ticket (or a problem with no ticket yet) from "just picked up" to "ready to plan"</td></tr>
   <tr><td nowrap><a href="docs/sandbox.md"><code>sandbox</code></a></td><td>Sets up a Docker Sandboxes microVM so Claude Code can be used as normal (sessions, skills, plugins) with permissions skipped</td></tr>
+  <tr><td nowrap><a href="docs/update-skills.md"><code>update-skills</code></a></td><td>Updates every skill and plugin you have installed from this repo</td></tr>
 </table>
 
 <table>
@@ -27,7 +28,7 @@ Inside Claude Code:
 
 The skills are then available in every project. Plugin skills are namespaced, so run it as `/lgh-skills:start-ticket`.
 
-To update later: `/plugin marketplace update lgh-skills`.
+To update later, run `/lgh-skills:update-skills`, then restart Claude Code. See [docs/update-skills.md](docs/update-skills.md).
 
 `dev-talk` is a separate plugin in the same marketplace: `/plugin install dev-talk@lgh-skills`. See [docs/dev-talk.md](docs/dev-talk.md).
 
