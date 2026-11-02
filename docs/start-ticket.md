@@ -22,7 +22,9 @@ It can also be used purely as a ticket writer: describe a problem, and it turns 
 /start-ticket PROJ-123 gsd    # ticket key and planner given
 ```
 
-You'll be asked which ticket you're starting (or "No ticket") and which planner to hand off to: an installed planner such as `paul`, `gsd` or `superpowers`, another skill, `just start` to begin the work with no planner, or `none` to only create tickets. A ticket URL works in place of the key. If your account has several Jira sites, you'll be asked which one to use.
+You'll be asked which ticket you're starting (or "No ticket") and which planner to hand off to: your 2 most used installed planners, another skill, `just start` to begin the work with no planner, or `none` to only create tickets. A ticket URL works in place of the key. If your account has several Jira sites, you'll be asked which one to use.
+
+Planners are found from your installed skills: `paul`, `gsd`, `superpowers`, and any skill whose description says it creates a plan or spec. They're ranked by the `skillUsage` counts in `~/.claude.json`. If `jq` or those counts are missing, `paul`, `gsd` and `superpowers` come first.
 
 ## How it works
 

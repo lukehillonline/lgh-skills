@@ -52,7 +52,11 @@ Otherwise ask the remaining questions in a single AskUserQuestion call:
    - `No ticket`: I'll describe the problem instead.
    - `I'll paste it in chat`: the user will send the key as their next message.
 2. **Planner** (header `Planner`): "Which planning skill should we use?"
-   - Up to 2 of `paul`, `gsd` and `superpowers`, only those in the available-skills list (`paul:*`, `gsd-*`, `superpowers:*`). Name any third one in the question text.
+   - The 2 most used planners, most used first. Name any others in the question text. To find them:
+     1. List the planners in the available-skills list: `paul` (`paul:*`), `gsd` (`gsd-*`), `superpowers` (`superpowers:*`), and any other skill whose description says it creates a plan or spec. Treat all skills from one plugin as one planner, labelled with the plugin name. A standalone skill keeps its own name.
+     2. Run `jq -r '.skillUsage // {} | to_entries | .[] | "\(.value.usageCount) \(.key)"' ~/.claude.json` once, before asking.
+     3. Score each planner by adding the counts of all its skills. A skill not in the output counts as 0.
+     4. Rank by score. For ties, or if the command fails, put `paul`, `gsd` and `superpowers` first, in that order.
    - `just start`: skip planning and start the work from the summary.
    - `none`: I just want to create tickets.
 
@@ -77,6 +81,7 @@ Runs as soon as a ticket key is known, before anything else happens with it.
 - `getJiraIssue` for the key with `view: "evidence"`. This is the only fetch of the ticket, so **2A** reuses it. If the ticket can't be found, stop and tell the user.
 - `executeRead` with `listJiraIssueTransitions`, `inputs: { "issueIdOrKey": "<KEY>" }` and `responseFields: ["transitions.id", "transitions.name", "transitions.to.name", "transitions.to.statusCategory.key"]`.
 - `test -f .planning/tickets/<KEY>.md` to check for a saved summary (see **4**).
+- The `jq` usage command from **1**, if the args didn't name a planner.
 
 **Questions.** Ask whichever of these apply in one AskUserQuestion call:
 
